@@ -1,0 +1,11 @@
+
+pychache/
+*.py[cod]
+
+.Python
+venv/
+.ssh/
+db.sqlite3
+.DS_Store
+
+.idea/
