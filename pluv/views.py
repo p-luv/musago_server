@@ -1,10 +1,18 @@
 import random
 
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Quiz
-from .serializers import QuizSerializer
+from . import models, serializers
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+
 # Create your views here.
+from .serializers import QuizSerializer
+
 
 @api_view(['GET'])
 def helloAPI(request):
@@ -16,3 +24,35 @@ def randomQuiz(request, id):
     randomQuizs =  random.sample(list(totalQuizs), id)
     serializer = QuizSerializer(randomQuizs, many=True)
     return Response(serializer.data)
+
+
+class SignupView(APIView):
+    def post(self, request):
+
+        user = User.objects.create_user(username=request.data['username'], password=request.data['password1'])
+        profile = models.Profile(user=user, nickname=request.data['nickname'], carno=request.data['carno'], optype=request.data['optype'])
+
+        user.save()
+        profile.save()
+
+        token = Token.objects.create(user=user)
+        return Response({"Token": token.key})
+
+
+class PointView(APIView):
+    def get(self, request, format=None):
+        print(request.user)
+        print(request.auth)
+        results = models.Point.objects.filter(user=request.user)
+        serializer = serializers.PointSerializer(results, many=True)
+        return Response(serializer.data)
+
+
+class LoginView(APIView):
+    def post(self, request):
+        user = authenticate(username=request.data['username'], password=request.data['password'])
+        if user is not None:
+            token = Token.objects.get(user=user)
+            return Response({"Token": token.key})
+        else:
+            return Response(status=401)

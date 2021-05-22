@@ -18,5 +18,9 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('quiz/', include('pluv.urls')),
+    path('account/', include('pluv.urls')),
+    # rest-auth
+    path('rest-auth/', include('rest_auth.urls')),
+    path('rest-auth/signup/', include('rest_auth.registration.urls')),
+
 ]
