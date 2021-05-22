@@ -41,8 +41,7 @@ class SignupView(APIView):
 
 class PointView(APIView):
     def get(self, request, format=None):
-        print(request.user)
-        print(request.auth)
+
         results = models.Point.objects.filter(user=request.user)
         serializer = serializers.PointSerializer(results, many=True)
         return Response(serializer.data)
