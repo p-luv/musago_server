@@ -1,5 +1,5 @@
 import random
-
+import json
 from rest_framework.decorators import api_view
 from .models import Quiz
 from . import models, serializers
@@ -29,14 +29,22 @@ def randomQuiz(request, id):
 class SignupView(APIView):
     def post(self, request):
 
-        user = User.objects.create_user(username=request.data['username'], password=request.data['password1'])
-        profile = models.Profile(user=user, nickname=request.data['nickname'], carno=request.data['carno'], optype=request.data['optype'])
+        if request.META['CONTENT_TYPE'] == "application/json":
+            request = json.loads(request.body)
+            user = User.objects.create_user(username=request['username'], password=request['password1'])
+            profile = models.Profile(user=user, nickname=request['nickname'], carno=request['carno'], optype=request['optype'])
 
-        user.save()
-        profile.save()
+        else :
+            user = User.objects.create_user(username=request.data['username'], password=request.data['password1'])
+            profile = models.Profile(user=user, nickname=request.data['nickname'], carno=request.data['carno'], optype=request.data['optype'])
+
+            user.save()
+            profile.save()
+
 
         token = Token.objects.create(user=user)
         return Response({"Token": token.key})
+
 
 
 class PointView(APIView):
@@ -49,7 +57,14 @@ class PointView(APIView):
 
 class LoginView(APIView):
     def post(self, request):
-        user = authenticate(username=request.data['username'], password=request.data['password'])
+
+        if request.META['CONTENT_TYPE'] == "application/json":
+            user = authenticate(username=request['username'], password=request['password'])
+        else :
+            user = authenticate(username=request.data['username'], password=request.data['password'])
+
+
+        #user = authenticate(username=request.data['username'], password=request.data['password'])
         if user is not None:
             token = Token.objects.get(user=user)
             return Response({"Token": token.key})

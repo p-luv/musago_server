@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-skw41c4o&i)i0s#(nm^kf_vic8dyjc59s%_nxa2t=t=s6hii20
 DEBUG = True
 
 ##AWS hosts
-ALLOWED_HOSTS = ['.ap-northeast-2.compute.amazonaws.com']
-
+#ALLOWED_HOSTS = ['.ap-northeast-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -68,6 +68,7 @@ MIDDLEWARE = [
     # #CORS
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+
 ]
 
 
