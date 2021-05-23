@@ -64,7 +64,8 @@ class LoginView(APIView):
         # else :
         #     user = authenticate(username=request.data['username'], password=request.data['password'])
 
-
+        print(request.data['username'])
+        print(request.data['password'])
         user = authenticate(username=request.data['username'], password=request.data['password'])
         if user is not None:
             token = Token.objects.get(user=user)
