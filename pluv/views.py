@@ -58,13 +58,14 @@ class PointView(APIView):
 class LoginView(APIView):
     def post(self, request):
 
-        if request.META['CONTENT_TYPE'] == "application/json":
-            user = authenticate(username=request['username'], password=request['password'])
-        else :
-            user = authenticate(username=request.data['username'], password=request.data['password'])
+
+        # if request.META['CONTENT_TYPE'] == "application/json":
+        #     user = authenticate(username=request['username'], password=request['password'])
+        # else :
+        #     user = authenticate(username=request.data['username'], password=request.data['password'])
 
 
-        #user = authenticate(username=request.data['username'], password=request.data['password'])
+        user = authenticate(username=request.data['username'], password=request.data['password'])
         if user is not None:
             token = Token.objects.get(user=user)
             return Response({"Token": token.key})
